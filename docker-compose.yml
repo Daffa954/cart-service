@@ -1,0 +1,99 @@
+services:
+  cart-db:
+    image: postgres:17-alpine
+    container_name: cart-db
+    restart: always
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - cart_db_data:/var/lib/postgresql/data
+
+  cart-pgadmin:
+    image: dpage/pgadmin4
+    container_name: cart-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5052:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - cart_pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      cart-db:
+        condition: service_healthy
+
+  cart-service-1:
+    # Menggunakan image spesifik sesuai permintaanmu
+    image: dbigboss/cart-service:v1
+    # build: .  <-- Beri komentar atau hapus baris ini agar Docker tidak melakukan build ulang
+    container_name: cart-service-1
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    environment:
+    # --- UBAH DUA BARIS INI ---
+      - APP_ENV=cartion
+      - APP_DEBUG=false
+      # --------------------------
+      
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=cart-db
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-cartdb}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-admin}
+      - JWT_SECRET=${JWT_SECRET}
+      - RAJAONGKIR_API_KEY=${RAJAONGKIR_API_KEY}
+      - SERVICE_PASSWORD=${SERVICE_PASSWORD}
+      - KOMERCE_BASE_URL=${KOMERCE_BASE_URL}
+    depends_on:
+      cart-db:
+        condition: service_healthy
+    # Cukup jalankan migrasi dan hidupkan server
+    command: sh -c "php artisan migrate --force && nginx && php-fpm"
+
+  cart-service-2:
+    # Menggunakan image spesifik sesuai permintaanmu
+    image: dbigboss/cart-service:v1
+    # build: .  <-- Beri komentar atau hapus baris ini agar Docker tidak melakukan build ulang
+    container_name: cart-service-2
+    restart: unless-stopped
+    ports:
+      - "8001:80"
+    environment:
+    # --- UBAH DUA BARIS INI ---
+      - APP_ENV=cartion
+      - APP_DEBUG=false
+      # --------------------------
+      
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=cart-db
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-cartdb}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-admin}
+      - JWT_SECRET=${JWT_SECRET}
+      - RAJAONGKIR_API_KEY=${RAJAONGKIR_API_KEY}
+      - SERVICE_PASSWORD=${SERVICE_PASSWORD}
+      - KOMERCE_BASE_URL=${KOMERCE_BASE_URL}
+    depends_on:
+      cart-db:
+        condition: service_healthy
+    # Cukup jalankan migrasi dan hidupkan server
+    command: sh -c "php artisan migrate --force && nginx && php-fpm"
+
+volumes:
+  cart_db_data:
+  cart_pgadmin_data:

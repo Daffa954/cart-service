@@ -1,0 +1,41 @@
+# ── Dependencies ──────────────────────────────────────────────────────────────
+/vendor/
+/node_modules/
+
+# ── Environment files ─────────────────────────────────────────────────────────
+.env
+# .env.docker is intentionally NOT ignored (needed for Docker build context)
+
+# ── Laravel generated files ───────────────────────────────────────────────────
+/bootstrap/cache/*.php
+/storage/*.key
+/storage/logs/*.log
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/views/
+
+# ── Tests ─────────────────────────────────────────────────────────────────────
+/tests/
+
+# ── Git ───────────────────────────────────────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ── IDE & OS ──────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.DS_Store
+Thumbs.db
+
+# ── Docker itself ─────────────────────────────────────────────────────────────
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+.dockerignore
+
+# ── Dev tooling ───────────────────────────────────────────────────────────────
+phpunit.xml
+.php-cs-fixer.php
+phpstan.neon
+README.md
