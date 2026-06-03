@@ -2,6 +2,8 @@ services:
   cart-db:
     image: postgres:17-alpine
     container_name: cart-db
+    networks:
+      - marketplace_net  # <-- Masukkan service ini ke jaringan
     restart: always
     ports:
       - "5436:5432"
@@ -20,6 +22,8 @@ services:
   cart-pgadmin:
     image: dpage/pgadmin4
     container_name: cart-pgadmin
+    networks:
+      - marketplace_net  # <-- Masukkan service ini ke jaringan
     restart: unless-stopped
     ports:
       - "5052:80"
@@ -37,6 +41,8 @@ services:
     image: dbigboss/cart-service:v1
     # build: .  <-- Beri komentar atau hapus baris ini agar Docker tidak melakukan build ulang
     container_name: cart-service-1
+    networks:
+      - marketplace_net  # <-- Masukkan service ini ke jaringan
     restart: unless-stopped
     ports:
       - "8000:80"
@@ -68,6 +74,8 @@ services:
     image: dbigboss/cart-service:v1
     # build: .  <-- Beri komentar atau hapus baris ini agar Docker tidak melakukan build ulang
     container_name: cart-service-2
+    networks:
+      - marketplace_net  # <-- Masukkan service ini ke jaringan
     restart: unless-stopped
     ports:
       - "8001:80"
@@ -97,3 +105,7 @@ services:
 volumes:
   cart_db_data:
   cart_pgadmin_data:
+
+networks:
+  marketplace_net:
+    external: true
