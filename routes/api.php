@@ -25,7 +25,14 @@ use Illuminate\Http\Request; // GANTI DARI Facades\Request KE Http\Request
 |   GET    /api/health                 → Health check (no auth)
 |
 */
-
+Route::get('/', function () {
+    // Rute root untuk cek apakah API ini hidup dan return 200 OK dengan pesan sederhana
+    return response()->json([
+        'message' => 'Welcome to the Product Service API! Endpoint is working.',
+        'status' => 'success',
+        'timestamp' => now()->toDateTimeString()
+    ]);
+});
 Route::middleware(['service.auth', 'micro.jwt'])->group(function () {
 
     Route::prefix('cart')->group(function () {
