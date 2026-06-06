@@ -96,6 +96,9 @@ services:
       - RAJAONGKIR_API_KEY=${RAJAONGKIR_API_KEY}
       - SERVICE_PASSWORD=${SERVICE_PASSWORD}
       - KOMERCE_BASE_URL=${KOMERCE_BASE_URL}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+      - ORDER_SERVICE_URL=${ORDER_SERVICE_URL}
+      - PRODUCT_SERVICE_URL=${PRODUCT_SERVICE_URL}
     depends_on:
       cart-db:
         condition: service_healthy
